@@ -4,14 +4,15 @@ import { useCreateTweet } from '../hooks/userCreateTweet';
 import ButtonGroup from "./Buttons/ButtonGroup";
 import Button from '@mui/material/Button';
 import Spinner from "./Spinner";
-import Label from "./Label";
+import Form from "./Form";
+import TextArea from "./TextArea";
 
 interface FormValues {
     content: string;
 }
 
 const TweetForm: React.FC = () => {
-    const { register, handleSubmit, reset, formState: { errors }, watch } = useForm<FormValues>();
+    const { register, reset, formState: { errors }, watch } = useForm<FormValues>();
     const mutation = useCreateTweet();
     const content = watch('content');
 
@@ -24,20 +25,13 @@ const TweetForm: React.FC = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="relative">
-            <div className="relative">
-                <Label
-                    id="tweet-content"
-                    label="Tweet Content"
-                    required
-                    error={!!errors.content}
-                />
-                <textarea
-                    id="tweet-content"
-                    {...register('content', { required: 'Content is required' })}
-                    placeholder="What's happening?"
-                    className={`w-full p-2 pr-16 border ${errors.content ? 'border-red-500' : 'border-gray-300'} bg-gray-950 text-white rounded relative`}
-                />
+        <Form onSubmit={onSubmit}>
+            <TextArea
+                id="content"
+                register={register}
+                error={!!errors.content}
+                placeholder="What's happening?"
+            />
                 <div className="absolute right-2 bottom-2">
                     <ButtonGroup variant="contained" orientation="horizontal" size="medium">
                         <Button
@@ -49,10 +43,9 @@ const TweetForm: React.FC = () => {
                         </Button>
                     </ButtonGroup>
                 </div>
-            </div>
             {errors.content && <p className="text-red-500">{errors.content.message}</p>}
             {mutation.isError && <div className="text-red-500">Error: Unable to Post tweet</div>}
-        </form>
+        </Form>
     );
 };
 
