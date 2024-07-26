@@ -1,16 +1,23 @@
+// src/components/TweetForm/Form.tsx
 import React from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-interface FormValues {
-    content: string;
+import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
+import { FormValues } from './TweetForm';
+
+interface FormProps {
+    onSubmit: SubmitHandler<FormValues>;
+    children: React.ReactNode;
 }
 
-const Form: React.FC<{ onSubmit: SubmitHandler<FormValues>, children: React.ReactNode }> = ({ onSubmit, children }) => {
-    const { handleSubmit } = useForm<FormValues>();
+const Form: React.FC<FormProps> = ({ onSubmit, children }) => {
+    const methods = useForm<FormValues>();
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="relative">
-            {children}
-        </form>
+        <FormProvider {...methods}>
+            <form onSubmit={methods.handleSubmit(onSubmit)} className="relative">
+                {children}
+            </form>
+        </FormProvider>
     );
 };
+
 export default Form;
